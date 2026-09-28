@@ -39,7 +39,7 @@
 ;;; Code:
 
 ;; Open file as read-only depending on location or name
-(defcustom read-only-file-pattern-list nil
+(defcustom file-read-only-pattern-list nil
   "List of user-defined patterns to match target file path for `find-file-hook'.
 If the target file path matches one of the patterns, then it will be opened
 as read-only.
@@ -52,7 +52,7 @@ example, from the Help buffer."
 
 (defun file-read-only-default ()
   (when buffer-file-name
-    (let* ((patterns read-only-file-pattern-list)
+    (let* ((patterns file-read-only-pattern-list)
 	   (match nil)
 	   (pattern nil))
       (while (and (not match) patterns)
