@@ -1,5 +1,5 @@
 ;;; file-read-only-default.el -*- lexical-binding: t -*-
-
+
 ;; Copyright (C) 2026 Free Software Foundation, Inc.
 
 ;; Author: Adam Klingenberger
@@ -52,6 +52,8 @@ example, from the Help buffer."
 (defun file-read-only-set-default ()
   "Enables `read-only-mode' if `buffer-file-name' matches a pattern in
 `file-read-only-pattern-list'.
+
+;;; Main methods ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Returns non-nil if `read-only-mode' is enabled, nil otherwise."
   (when buffer-file-name
     (let* ((patterns file-read-only-pattern-list)
@@ -62,5 +64,9 @@ Returns non-nil if `read-only-mode' is enabled, nil otherwise."
 	(if (string-match-p (expand-file-name pattern) buffer-file-name)
 	    (progn (setq match t)
 		   (read-only-mode)))))))
+
+;;; Mode definition ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (provide 'file-read-only-default)
