@@ -38,7 +38,14 @@
 
 ;;; Code:
 
-(defcustom file-read-only-pattern-list nil
+(defgroup file-read-only-default ()
+  "Minor mode to set `read-only-mode' when visiting files in user-defined locations."
+  :prefix "file-read-only-default-"
+  :group 'file)
+
+
+;;; User options ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defcustom file-read-only-default-pattern-list nil
   "List of user-defined patterns to match target file path for `find-file-hook'.
 If the target file path matches one of the patterns, then it will be opened
 as read-only.
@@ -46,27 +53,50 @@ as read-only.
 This option can be used to prevent accidental edit of files visited, for
 example, from the Help buffer."
   :type '(repeat :tag "Read-only file pattern list"
-		 (directory :tag "Read-only file pattern"))
-  :group 'file)
+		 (string :tag "Read-only file pattern")))
 
-(defun file-read-only-set-default ()
-  "Enables `read-only-mode' if `buffer-file-name' matches a pattern in
-`file-read-only-pattern-list'.
+(defun file-read-only-default-default-p (pattern file)
+  "Default predicate used by `file-read-only-default-predicate'."
+  (string-prefix-p (expand-file-name pattern) file))
+
+(defcustom file-read-only-default-predicate #'file-read-only-default-default-p
+  "Function which is invoked to test each pattern in
+`file-read-only-default-pattern-list'."
+  :type 'function
+  :risky t)
 
 ;;; Main methods ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun file-read-only-default-set ()
+  "Enable `read-only-mode' if `buffer-file-name' matches a pattern in
+`file-read-only-default-pattern-list'.
 Returns non-nil if `read-only-mode' is enabled, nil otherwise."
   (when buffer-file-name
-    (let* ((patterns file-read-only-pattern-list)
-	   (match nil)
-	   (pattern nil))
+    (let ((patterns file-read-only-default-pattern-list) (match) (pattern))
       (while (and (not match) patterns)
 	(setq pattern (pop patterns))
-	(if (string-match-p (expand-file-name pattern) buffer-file-name)
-	    (progn (setq match t)
-		   (read-only-mode)))))))
+	(if (and pattern (funcall file-read-only-default-predicate pattern buffer-file-name))
+	    (setq match t)))
+      (when match
+	(read-only-mode)))))
 
 ;;; Mode definition ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun file-read-only-default--enable-mode ()
+  "Enable `file-read-only-default-mode'."
+  (add-hook 'find-file-hook #'file-read-only-default-set))
+
+(defun file-read-only-default--disable-mode ()
+  "Disable `file-read-only-default-mode'."
+  (remove-hook 'find-file-hook #'file-read-only-default-set))
+
+;;;###autoload
+(define-minor-mode file-read-only-default-mode
+  "Default to `read-only-mode' when visiting files in user-defined locations."
+  :global t
+  (if file-read-only-default-mode
+      (file-read-only-default--enable-mode)
+    (file-read-only-default--disable-mode)))
 
 
 (provide 'file-read-only-default)
+;;; file-read-only-default.el ends here
