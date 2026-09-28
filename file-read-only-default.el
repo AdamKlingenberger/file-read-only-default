@@ -47,7 +47,7 @@ This option can be used to prevent accidental edit of files visited, for
 example, from the Help buffer."
   :type '(repeat :tag "Read-only file pattern list"
 		 (directory :tag "Read-only file pattern"))
-  :group 'my)
+  :group 'file)
 
 (defun file-read-only-set-default ()
   "Enables `read-only-mode' if `buffer-file-name' matches a pattern in
