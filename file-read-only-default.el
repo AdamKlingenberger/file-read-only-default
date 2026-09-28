@@ -38,7 +38,6 @@
 
 ;;; Code:
 
-;; Open file as read-only depending on location or name
 (defcustom file-read-only-pattern-list nil
   "List of user-defined patterns to match target file path for `find-file-hook'.
 If the target file path matches one of the patterns, then it will be opened
@@ -50,7 +49,10 @@ example, from the Help buffer."
 		 (directory :tag "Read-only file pattern"))
   :group 'my)
 
-(defun file-read-only-default ()
+(defun file-read-only-set-default ()
+  "Enables `read-only-mode' if `buffer-file-name' matches a pattern in
+`file-read-only-pattern-list'.
+Returns non-nil if `read-only-mode' is enabled, nil otherwise."
   (when buffer-file-name
     (let* ((patterns file-read-only-pattern-list)
 	   (match nil)
