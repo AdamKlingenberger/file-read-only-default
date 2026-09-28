@@ -5,7 +5,7 @@
 ;; Author: Adam Klingenberger
 ;; Maintainer: Adam Klingenberger
 ;; Created: 2026
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; Package-Requires: TBD
 ;; URL: https://github.com/AdamKlingenberger/file-read-only-default
 ;; Keywords: emacs, read-only-mode
