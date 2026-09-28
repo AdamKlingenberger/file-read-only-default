@@ -60,7 +60,7 @@ Returns non-nil if `read-only-mode' is enabled, nil otherwise."
       (while (and (not match) patterns)
 	(setq pattern (pop patterns))
 	(if (string-match-p (expand-file-name pattern) buffer-file-name)
-	    (progn (read-only-mode)
-		   (setq match t)))))))
+	    (progn (setq match t)
+		   (read-only-mode)))))))
 
 (provide 'file-read-only-default)
